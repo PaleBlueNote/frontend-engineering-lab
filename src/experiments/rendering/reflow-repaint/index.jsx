@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef, useTransition } from 'react';
 import Stats from 'stats.js';
 import { Play, Pause, RefreshCw, Zap, Cpu, Loader2 } from 'lucide-react';
 
-const ITEM_COUNT = 3000;
+const ITEM_COUNT = 1000;
 
 // React.memo로 최적화된 아이템 레이어
 const TestItemLayer = React.memo(({ isOptimized, count }) => {
@@ -11,13 +11,15 @@ const TestItemLayer = React.memo(({ isOptimized, count }) => {
             {Array.from({ length: count }).map((_, i) => (
                 <div
                     key={i}
-                    className="test-item absolute w-6 h-6 rounded-full shadow-lg"
+                    // ✅ [Fix #5] shadow-lg와 rounded-full로 페인트 비용 유지
+                    className="test-item absolute w-8 h-8 rounded-full shadow-lg border border-white/20"
                     style={{
                         top: `${Math.random() * 90 + 5}%`,
                         left: '50px',
                         background: `hsl(${Math.random() * 360}, 70%, 60%)`,
+                        // GPU 모드일 때만 레이어 분리 (Layer Promotion)
                         willChange: isOptimized ? 'transform' : 'auto',
-                        opacity: 0.8,
+                        opacity: 0.9,
                         transform: 'translate3d(0,0,0)'
                     }}
                 />
@@ -31,17 +33,12 @@ const TestItemLayer = React.memo(({ isOptimized, count }) => {
 const ReflowRepaint = () => {
     const [isRunning, setIsRunning] = useState(false);
     const [isOptimized, setIsOptimized] = useState(false);
-
-    // ✅ [핵심 변경] React 18의 동시성 모드 훅 사용
-    // isPending: 작업이 진행 중일 때 자동으로 true가 됨
-    // startTransition: 무거운 상태 업데이트를 래핑하는 함수
     const [isPending, startTransition] = useTransition();
 
     const containerRef = useRef(null);
     const requestRef = useRef();
     const statsRef = useRef(null);
 
-    // Stats 초기화
     useEffect(() => {
         if (!statsRef.current && containerRef.current) {
             const stats = new Stats();
@@ -55,13 +52,10 @@ const ReflowRepaint = () => {
         }
     }, []);
 
-    // ✅ [핵심 변경] setTimeout 제거 및 startTransition 적용
     const handleModeToggle = () => {
         if (isPending) return;
 
-        setIsRunning(false); // 애니메이션 멈춤 (즉시 반영)
-
-        // 무거운 렌더링(3000개 업데이트)을 트랜지션으로 감싸서 백그라운드 처리
+        setIsRunning(false);
         startTransition(() => {
             setIsOptimized((prev) => !prev);
         });
@@ -70,13 +64,15 @@ const ReflowRepaint = () => {
     const animate = (time) => {
         if (statsRef.current) statsRef.current.begin();
         const items = document.getElementsByClassName('test-item');
-        const position = (Math.sin(time / 500) + 1) * 150;
+        const position = (Math.sin(time / 500) + 1) * 200;
 
         for (let i = 0, len = items.length; i < len; i++) {
             const item = items[i];
             if (isOptimized) {
+                // GPU Composite
                 item.style.transform = `translate3d(${position}px, 0, 0)`;
             } else {
+                // CPU Layout (Reflow)
                 item.style.left = `${position}px`;
             }
         }
@@ -163,7 +159,6 @@ const ReflowRepaint = () => {
                                 isOptimized ? 'translate-x-[104%]' : 'translate-x-0'
                             }`}
                         >
-                            {/* ✅ 로딩 애니메이션 조건 변경 */}
                             {isPending ? (
                                 <Loader2 size={16} className="animate-spin text-gray-400" />
                             ) : (
@@ -184,7 +179,6 @@ const ReflowRepaint = () => {
                 ref={containerRef}
                 className="relative h-[500px] bg-slate-900 rounded-xl overflow-hidden border border-slate-800 shadow-2xl ring-1 ring-slate-900/5"
             >
-                {/* ✅ 로딩 오버레이 조건 변경 */}
                 {isPending && (
                     <div className="absolute inset-0 z-30 bg-black/60 backdrop-blur-sm flex flex-col items-center justify-center text-white">
                         <Loader2 size={48} className="animate-spin text-blue-500 mb-4" />
