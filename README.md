@@ -10,7 +10,7 @@
 
 ## 🎯 Project Goal
 
-AI가 코드를 작성해 주는 시대에, 엔지니어의 가치는 **"보이지 않는 문제를 해결하는 능력"**에 있습니다.  
+AI가 코드를 작성해 주는 시대에, 엔지니어의 가치는 **"보이지 않는 문제를 해결하는 능력"** 에 있습니다.  
 이 프로젝트는 웹 브라우저를 단순한 UI 뷰어가 아닌 **하나의 그래픽스 엔진이자 운영체제**로 바라보고, 다음 세 가지를 심도 있게 연구합니다.
 
 1.  **Rendering Engineering:** 브라우저 렌더링 파이프라인(Reflow/Repaint) 제어 및 GPU 가속 활용
@@ -24,8 +24,8 @@ AI가 코드를 작성해 주는 시대에, 엔지니어의 가치는 **"보이�
 ### 🎨 Rendering & Graphics (Browser as a 3D Engine)
 > OpenGL/Graphics 지식을 활용하여 렌더링 성능을 극대화합니다.
 
-- [ ] **Reflow vs Repaint:** CSS 속성에 따른 렌더링 파이프라인 비용 비교 및 시각화
-- [ ] **GPU Compositing:** `transform`과 `will-change`를 활용한 60FPS 애니메이션 구현
+- [x] **Reflow vs Repaint:** CSS 속성에 따른 렌더링 파이프라인 비용 비교 및 시각화
+- [x] **GPU Compositing:** `transform`과 `will-change`를 활용한 60FPS 애니메이션 구현
 - [ ] **DOM Virtualization:** View Frustum Culling(절두체 선별) 기법을 응용한 대용량 리스트 최적화
 - [ ] **Frame Control:** `requestAnimationFrame`과 V-Sync 동기화 원리 검증
 
