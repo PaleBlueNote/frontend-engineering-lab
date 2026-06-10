@@ -25,8 +25,8 @@ const Home = () => {
             </span>
                     </h1>
                     <p className="text-lg text-slate-600 max-w-2xl leading-relaxed">
-                        웹 브라우저의 렌더링 파이프라인, 메모리 구조, 네트워크 아키텍처를
-                        <strong> 실험하고 증명하는</strong> 인터랙티브 연구소입니다.
+                        React 렌더링, 클로저, 이벤트 루프, 상태 관리 — 면접에서 자주 나오는 주제들을
+                        <strong> 코드로 직접 구현하고 측정</strong>하는 프론트엔드 엔지니어링 랩입니다.
                     </p>
                 </div>
             </section>
@@ -61,8 +61,8 @@ const Home = () => {
                                             <h3 className="text-lg font-bold text-slate-900 mb-1 group-hover:text-blue-600 transition-colors">
                                                 {item.title}
                                             </h3>
-                                            <p className="text-sm text-slate-500 mb-4">
-                                                {item.status === 'ready' ? '실험 준비 완료' : '실험 예정'}
+                                            <p className="text-sm text-slate-500 mb-4 leading-relaxed">
+                                                {item.description}
                                             </p>
 
                                             <div className="flex items-center text-sm font-medium text-blue-600 opacity-0 group-hover:opacity-100 transform translate-y-2 group-hover:translate-y-0 transition-all duration-300">
